@@ -19,6 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TaskController {
 
+
     private final DbService service;
     private final TaskMapper taskMapper;
 
@@ -30,13 +31,13 @@ public class TaskController {
     }
 
     @GetMapping(value = "{taskId}")
-    public TaskDto getTask(@PathVariable Long taskId) {
-        return new TaskDto(1L, "test title", "test_content");
+    public TaskDto getTask(@PathVariable Long taskId) throws TaskNotFoundException {
+        return taskMapper.mapToTaskDto(service.getTask(taskId).orElseThrow(TaskNotFoundException::new));
     }
 
     @DeleteMapping(value = "{taskId}")
-    public void deleteTask(@PathVariable Long taskId) {
-
+    public void deleteTask(@RequestParam Long taskId) throws TaskNotFoundException{
+        service.deleteTask(taskId);
     }
 
     @PutMapping
